@@ -3,6 +3,13 @@
 version = 3
 
 [[package]]
+name = "another_crate"
+version = "0.1.0"
+dependencies = [
+ "mirai-annotations",
+]
+
+[[package]]
 name = "mirai-annotations"
 version = "1.12.0"
 source = "git+https://github.com/facebookexperimental/MIRAI.git?rev=5ca2f1e#5ca2f1ebe1b057ba74438782e2bef91ec87834c4"
@@ -11,5 +18,6 @@ source = "git+https://github.com/facebookexperimental/MIRAI.git?rev=5ca2f1e#5ca2
 name = "mirai_research"
 version = "0.1.0"
 dependencies = [
+ "another_crate",
  "mirai-annotations",
 ]

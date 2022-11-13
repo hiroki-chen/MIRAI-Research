@@ -2,22 +2,19 @@
 #![allow(incomplete_features)]
 #![allow(dead_code)]
 
+extern crate another_crate;
 extern crate mirai_annotations;
 
+use another_crate::{SecretTaint, Wrapper};
 use mirai_annotations::*;
-
-struct SecretTaintKind<const MASK: TagPropagationSet> {}
-
-const SECRET_TAINT: TagPropagationSet = TAG_PROPAGATION_ALL;
-
-type SecretTaint = SecretTaintKind<SECRET_TAINT>;
-
-struct Wrapper {
-    content: u32,
-}
 
 struct VecWrapper {
     inner: Vec<u8>,
+}
+
+fn foo() {
+    let v1: Vec<u64> = vec![0];
+    verify!(v1[0] == 0);
 }
 
 /// Tests whether adding tags to vector itself works.
@@ -164,11 +161,54 @@ fn test_vecwrapper_2() {
     verify!(has_tag!(&vec_wrapper.inner[0], SecretTaint));
 }
 
+fn test_func_call(input: u32) {
+    precondition!(has_tag!(&input, SecretTaint));
+
+    call(input);
+}
+
+/// Works well.
+fn call(input: u32) {
+    precondition!(has_tag!(&input, SecretTaint));
+    // Propagate the taint.
+    let res = if input > 123 { 1 } else { 0 };
+    call2(res);
+}
+
+/// Works well.
+fn call2(input: u32) {
+    precondition!(has_tag!(&input, SecretTaint));
+
+    call3(input + 3);
+}
+
+/// Works well.
+fn call3(input: u32) {
+    precondition!(has_tag!(&input, SecretTaint));
+
+    call_4(0 + input);
+}
+
+/// Works well, MIRAI can detect the error.
+fn call_4(input: u32) {
+    precondition!(has_tag!(&input, SecretTaint));
+
+    sanitize(input);
+}
+
+fn sanitize(input: u32) {
+    precondition!(has_tag!(&input, SecretTaint));
+    let sanitized = 0;
+
+    verify!(does_not_have_tag!(&sanitized, SecretTaint));
+    sanitize2(sanitized);
+}
+
+fn sanitize2(input: u32) {
+    precondition!(has_tag!(&input, SecretTaint));
+    verify!(has_tag!(&input, SecretTaint));
+}
+
 fn main() {
-    // test_vec_1();
-    // test_vec_2();
-    // test_vec_3();
-    // test_vec_5(Wrapper { content: 123 });
-    // test_vec_6();
-    test_vecwrapper_2();
+    test_vec_6();
 }

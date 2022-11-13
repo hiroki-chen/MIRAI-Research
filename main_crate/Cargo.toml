@@ -1,0 +1,10 @@
+[package]
+name = "mirai_research"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+mirai-annotations = { git = "https://github.com/facebookexperimental/MIRAI.git", rev = "5ca2f1e", package = "mirai-annotations" }
+another_crate = { path = "../another_crate" }
