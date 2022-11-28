@@ -6,4 +6,4 @@ MIRAI works very badly on vector types, possibly because std has a lot of traits
 
 ## MIRAI version
 
-https://github.com/facebookexperimental/MIRAI at branch `new_nightly`.
+https://github.com/facebookexperimental/MIRAI at branch `master` (`new_nightly` has been merged).
